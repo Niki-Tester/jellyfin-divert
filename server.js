@@ -35,6 +35,12 @@ app.get('/', (req, res) => {
       description: 'Movie Management',
     },
     {
+      name: 'Prowlarr',
+      port: 9696,
+      color: '#5D3FD3',
+      description: 'Indexer Manager',
+    },
+    {
       name: 'Transmission',
       port: 9091,
       color: '#DF2020',
