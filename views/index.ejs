@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jellyfin Services</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Media Services</h1>
+      <p class="redirect-message">
+        Redirecting to Jellyfin in <span id="countdown"><%= redirectDelay %></span> seconds...
+        <button id="cancelRedirect" class="cancel-btn">Cancel</button>
+      </p>
+    </header>
+
+    <div class="services-grid">
+      <% services.forEach(service => { %>
+      <a href="http://<%= host %>:<%= service.port %>" class="service-card" style="--service-color: <%= service.color %>">
+        <div class="service-icon">
+          <div class="icon-placeholder" style="background: <%= service.color %>">
+            <%= service.name.charAt(0) %>
+          </div>
+        </div>
+        <h2><%= service.name %></h2>
+        <p class="service-description"><%= service.description %></p>
+        <p class="service-port">Port <%= service.port %></p>
+      </a>
+      <% }); %>
+    </div>
+  </div>
+
+  <script>
+    let countdown = <%= redirectDelay %>;
+    let redirectCanceled = false;
+    const countdownElement = document.getElementById('countdown');
+    const redirectMessage = document.querySelector('.redirect-message');
+    const cancelBtn = document.getElementById('cancelRedirect');
+
+    // Cancel redirect on button click
+    cancelBtn.addEventListener('click', () => {
+      redirectCanceled = true;
+      redirectMessage.style.display = 'none';
+    });
+
+    // Cancel redirect if user clicks any service link
+    document.querySelectorAll('.service-card').forEach(card => {
+      card.addEventListener('click', () => {
+        redirectCanceled = true;
+      });
+    });
+
+    // Countdown timer
+    const timer = setInterval(() => {
+      if (redirectCanceled) {
+        clearInterval(timer);
+        return;
+      }
+
+      countdown--;
+      countdownElement.textContent = countdown;
+
+      if (countdown <= 0) {
+        clearInterval(timer);
+        window.location.href = 'http://<%= host %>:<%= redirectPort %>';
+      }
+    }, 1000);
+  </script>
+</body>
+
+</html>
