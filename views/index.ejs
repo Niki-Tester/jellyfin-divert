@@ -51,6 +51,7 @@
     document.querySelectorAll('.service-card').forEach(card => {
       card.addEventListener('click', () => {
         redirectCanceled = true;
+        redirectMessage.style.display = 'none';
       });
     });
 
